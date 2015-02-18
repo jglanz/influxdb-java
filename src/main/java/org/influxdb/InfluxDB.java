@@ -67,6 +67,14 @@ public interface InfluxDB {
 	 */
 	public String version();
 
+
+	/**
+	 * Set the timeouts for the underlying rest client
+	 *
+	 * @param timeout
+	 * @param unit
+	 */
+	public void setTimeout(long timeout, TimeUnit unit);
 	/**
 	 * Write a Series to the given database.
 	 * 
