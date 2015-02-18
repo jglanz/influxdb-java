@@ -1,9 +1,10 @@
 package org.influxdb.dto;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
+import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 
 /**
  * Configuration for a Database.
@@ -13,8 +14,8 @@ import com.google.common.collect.Lists;
  */
 public class DatabaseConfiguration {
 	private final String name;
-	private final List<ShardSpace> spaces = Lists.newArrayList();
-	private final List<String> continuousQueries = Lists.newArrayList();
+	private final List<ShardSpace> spaces = new ArrayList<>();
+	private final List<String> continuousQueries = new ArrayList<>();
 
 	/**
 	 * @param name
@@ -67,12 +68,7 @@ public class DatabaseConfiguration {
 	 */
 	@Override
 	public String toString() {
-		return Objects
-				.toStringHelper(this.getClass())
-				.add("name", this.name)
-				.add("spaces", this.spaces)
-				.add("continuousQueries", this.continuousQueries)
-				.toString();
+		return new ReflectionToStringBuilder(this).toString();
 	}
 
 }

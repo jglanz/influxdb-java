@@ -1,8 +1,9 @@
 package org.influxdb.dto;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
 import java.util.List;
 
-import com.google.common.base.Objects;
 
 /**
  * Represents a Shard.
@@ -123,14 +124,7 @@ public class Shard {
 	 */
 	@Override
 	public String toString() {
-		return Objects
-				.toStringHelper(this.getClass())
-				.add("id", this.id)
-				.add("startTime", this.startTime)
-				.add("endTime", this.endTime)
-				.add("longTerm", this.longTerm)
-				.add("shards", this.shards)
-				.toString();
+		return new ReflectionToStringBuilder(this).toString();
 	}
 
 }

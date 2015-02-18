@@ -1,6 +1,7 @@
 package org.influxdb.dto;
 
-import com.google.common.base.Objects;
+
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * Representation of a InfluxDB database user.
@@ -118,14 +119,7 @@ public class User {
 	 */
 	@Override
 	public String toString() {
-		return Objects
-				.toStringHelper(this.getClass())
-				.add("name", this.name)
-				.add("password", this.password)
-				.add("admin", this.admin)
-				.add("readFrom", this.readFrom)
-				.add("writeTo", this.writeTo)
-				.toString();
+		return new ReflectionToStringBuilder(this).toString();
 	}
 
 }

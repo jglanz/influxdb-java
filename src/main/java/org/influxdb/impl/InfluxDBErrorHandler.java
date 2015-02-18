@@ -1,29 +1,29 @@
 package org.influxdb.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
-import com.google.common.io.Closeables;
 import retrofit.ErrorHandler;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import com.google.common.base.Charsets;
-import com.google.common.io.CharStreams;
 
 class InfluxDBErrorHandler implements ErrorHandler {
 	@Override
 	public Throwable handleError(final RetrofitError cause) {
 		Response r = cause.getResponse();
 		if (r != null && r.getStatus() >= 400) {
-            InputStreamReader reader = null;
+			InputStream is = null;
             try {
-                reader = new InputStreamReader(r.getBody().in(), Charsets.UTF_8);
-                return new RuntimeException(CharStreams.toString(reader));
-            } catch (IOException e) {
+	            is = r.getBody().in();
+                String body = Helper.readStreamToString(is);
+                return new RuntimeException(body);
+            } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                Closeables.closeQuietly(reader);
+	            Helper.close(is);
             }
         }
 		return cause;

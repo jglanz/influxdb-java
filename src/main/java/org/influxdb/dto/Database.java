@@ -1,6 +1,6 @@
 package org.influxdb.dto;
 
-import com.google.common.base.Objects;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * Representation of a influxdb database.
@@ -32,7 +32,7 @@ public class Database {
 	 */
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this.getClass()).add("name", this.name).toString();
+		return new ReflectionToStringBuilder(this).toString();
 	}
 
 }

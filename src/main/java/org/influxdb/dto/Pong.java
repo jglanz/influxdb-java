@@ -1,6 +1,6 @@
 package org.influxdb.dto;
 
-import com.google.common.base.Objects;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * Representation of the response for a influxdb ping.
@@ -47,11 +47,7 @@ public class Pong {
 	 */
 	@Override
 	public String toString() {
-		return Objects
-				.toStringHelper(this.getClass())
-				.add("status", this.status)
-				.add("responseTime", this.responseTime)
-				.toString();
+		return new ReflectionToStringBuilder(this).toString();
 	}
 
 }

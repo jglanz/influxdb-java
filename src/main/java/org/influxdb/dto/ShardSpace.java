@@ -1,6 +1,7 @@
 package org.influxdb.dto;
 
-import com.google.common.base.Objects;
+
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * Represents a ShardSpace.
@@ -91,16 +92,7 @@ public class ShardSpace {
 	 */
 	@Override
 	public String toString() {
-		return Objects
-				.toStringHelper(this.getClass())
-				.add("name", this.name)
-				.add("database", this.database)
-				.add("retentionPolicy", this.retentionPolicy)
-				.add("shardDuration", this.shardDuration)
-				.add("regex", this.regex)
-				.add("replicationFactor", this.replicationFactor)
-				.add("split", this.split)
-				.toString();
+		return new ReflectionToStringBuilder(this).toString();
 	}
 
 }

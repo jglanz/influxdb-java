@@ -1,6 +1,7 @@
 package org.influxdb.dto;
 
-import com.google.common.base.Objects;
+
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * Representation of a InfluxDB Server which is part of a cluster.
@@ -47,11 +48,7 @@ public class Server {
 	 */
 	@Override
 	public String toString() {
-		return Objects
-				.toStringHelper(this.getClass())
-				.add("id", this.id)
-				.add("protobufConnectString", this.protobufConnectString)
-				.toString();
+		return new ReflectionToStringBuilder(this).toString();
 	}
 
 }
