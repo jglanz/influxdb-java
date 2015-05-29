@@ -11,7 +11,7 @@
 	<groupId>org.influxdb</groupId>
 	<artifactId>influxdb-java</artifactId>
 	<packaging>jar</packaging>
-	<version>1.7.1</version>
+	<version>1.7.2</version>
 	<name>influxdb java bindings</name>
 	<description>Java API to access the InfluxDB REST API</description>
 	<url>http://www.influxdb.org</url>
@@ -105,11 +105,11 @@
 			<artifactId>commons-lang</artifactId>
 			<version>2.6</version>
 		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>com.google.guava</groupId>-->
-			<!--<artifactId>guava</artifactId>-->
-			<!--<version>18.0</version>-->
-		<!--</dependency>-->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>14.0.1</version>
+		</dependency>
 		<dependency>
 			<groupId>com.squareup.retrofit</groupId>
 			<artifactId>retrofit</artifactId>
