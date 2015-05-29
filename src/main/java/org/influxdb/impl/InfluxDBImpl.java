@@ -48,6 +48,7 @@ public class InfluxDBImpl implements InfluxDB {
 	private final RestAdapter restAdapter;
 	private final InfluxDBService influxDBService;
 	private final InetAddress host;
+	private final OkHttpClient okHttpClient;
 	private final static int UDP_MAX_MESSAGE_SIZE = 2048;
 
 	/**
@@ -62,8 +63,10 @@ public class InfluxDBImpl implements InfluxDB {
 	 */
 	public InfluxDBImpl(final String url, final String username, final String password) {
 		super();
+		okHttpClient = new OkHttpClient();
 		this.username = username;
 		this.password = password;
+
 		try {
 			String hostPart = new URI(url).getHost();
 			this.host = InetAddress.getByName(hostPart);
@@ -72,7 +75,7 @@ public class InfluxDBImpl implements InfluxDB {
 		} catch (UnknownHostException e) {
 			throw new IllegalArgumentException("The given URI is not valid " + e.getMessage());
 		}
-		OkHttpClient okHttpClient = new OkHttpClient();
+
 		File cacheDir = new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString());
 		Cache cache = null;
 		try {
@@ -82,6 +85,7 @@ public class InfluxDBImpl implements InfluxDB {
 		}
 		okHttpClient.setCache(cache);
 
+
 		this.restAdapter = new RestAdapter.Builder()
 				.setEndpoint(url)
 				.setErrorHandler(new InfluxDBErrorHandler())
@@ -89,6 +93,12 @@ public class InfluxDBImpl implements InfluxDB {
 				.build();
 
 		this.influxDBService = this.restAdapter.create(InfluxDBService.class);
+	}
+
+	public void setTimeout(long timeout, TimeUnit unit) {
+		okHttpClient.setConnectTimeout(timeout, unit);
+		okHttpClient.setReadTimeout(timeout, unit);
+		okHttpClient.setWriteTimeout(timeout, unit);
 	}
 
 	@Override
