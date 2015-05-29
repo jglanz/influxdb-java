@@ -1,5 +1,6 @@
 package org.influxdb.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -9,10 +10,10 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import com.google.gson.Gson;
-import org.apache.commons.lang.time.StopWatch;
+import com.squareup.okhttp.Cache;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.ContinuousQuery;
 import org.influxdb.dto.Database;
@@ -30,6 +31,9 @@ import retrofit.client.Header;
 import retrofit.client.OkClient;
 import retrofit.client.Response;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Stopwatch;
+import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;
 
 /**
@@ -72,6 +76,15 @@ public class InfluxDBImpl implements InfluxDB {
 			throw new IllegalArgumentException("The given URI is not valid " + e.getMessage());
 		}
 
+		File cacheDir = new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString());
+		Cache cache = null;
+		try {
+			cache = new Cache(cacheDir, 10 * 1024 * 1024);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		okHttpClient.setCache(cache);
+
 
 		this.restAdapter = new RestAdapter.Builder()
 				.setEndpoint(url)
@@ -111,11 +124,9 @@ public class InfluxDBImpl implements InfluxDB {
 
 	@Override
 	public Pong ping() {
-		StopWatch watch = new StopWatch();
-		watch.start();
+		Stopwatch watch = Stopwatch.createStarted();
 		Pong pong = this.influxDBService.ping();
-		watch.stop();
-		pong.setResponseTime(watch.getTime());
+		pong.setResponseTime(watch.elapsed(TimeUnit.MILLISECONDS));
 		return pong;
 	}
 
@@ -142,6 +153,8 @@ public class InfluxDBImpl implements InfluxDB {
 		Gson gson = new Gson();
 		String data = gson.toJson(series);
 		// see: https://github.com/influxdb/influxdb/blob/master/api/udp/api.go#L66
+		Preconditions.checkArgument(data.length() < UDP_MAX_MESSAGE_SIZE, "The given data size: " + data.length()
+				+ " is larger or equal to the allowed maximum:" + UDP_MAX_MESSAGE_SIZE);
 
 		ByteBuffer buf = ByteBuffer.wrap(data.getBytes());
 
