@@ -1,5 +1,6 @@
 package org.influxdb.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -9,8 +10,10 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import com.squareup.okhttp.Cache;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.ContinuousQuery;
 import org.influxdb.dto.Database;
@@ -70,6 +73,15 @@ public class InfluxDBImpl implements InfluxDB {
 			throw new IllegalArgumentException("The given URI is not valid " + e.getMessage());
 		}
 		OkHttpClient okHttpClient = new OkHttpClient();
+		File cacheDir = new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString());
+		Cache cache = null;
+		try {
+			cache = new Cache(cacheDir, 10 * 1024 * 1024);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		okHttpClient.setCache(cache);
+
 		this.restAdapter = new RestAdapter.Builder()
 				.setEndpoint(url)
 				.setErrorHandler(new InfluxDBErrorHandler())
