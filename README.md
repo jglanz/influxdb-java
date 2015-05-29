@@ -1,6 +1,8 @@
 influxdb-java
 =============
 
+![Build Status](https://codeship.com/projects/283717b0-e817-0132-9a09-16e9dffe0695/status?branch=master)
+
 A pure Java library to access the REST API of a InfluxDB database.
 
 This implementation is meant as a Java rewrite of the influxdb-go package.
