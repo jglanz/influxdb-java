@@ -14,6 +14,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import com.squareup.okhttp.Cache;
+import org.apache.commons.lang.time.StopWatch;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.ContinuousQuery;
 import org.influxdb.dto.Database;
@@ -31,8 +32,6 @@ import retrofit.client.Header;
 import retrofit.client.OkClient;
 import retrofit.client.Response;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Stopwatch;
 import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -124,9 +123,9 @@ public class InfluxDBImpl implements InfluxDB {
 
 	@Override
 	public Pong ping() {
-		Stopwatch watch = Stopwatch.createStarted();
+		StopWatch watch = new StopWatch();
 		Pong pong = this.influxDBService.ping();
-		pong.setResponseTime(watch.elapsed(TimeUnit.MILLISECONDS));
+		pong.setResponseTime(watch.getTime());
 		return pong;
 	}
 
@@ -153,8 +152,8 @@ public class InfluxDBImpl implements InfluxDB {
 		Gson gson = new Gson();
 		String data = gson.toJson(series);
 		// see: https://github.com/influxdb/influxdb/blob/master/api/udp/api.go#L66
-		Preconditions.checkArgument(data.length() < UDP_MAX_MESSAGE_SIZE, "The given data size: " + data.length()
-				+ " is larger or equal to the allowed maximum:" + UDP_MAX_MESSAGE_SIZE);
+//		Preconditions.checkArgument(data.length() < UDP_MAX_MESSAGE_SIZE, "The given data size: " + data.length()
+//				+ " is larger or equal to the allowed maximum:" + UDP_MAX_MESSAGE_SIZE);
 
 		ByteBuffer buf = ByteBuffer.wrap(data.getBytes());
 
